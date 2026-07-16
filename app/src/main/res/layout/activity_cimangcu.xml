@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F5E1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- JAM -->
+        <TextView
+            android:id="@+id/tvJam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Jumat • 17 Jul 2026 • 00:08:53 •"
+            android:textColor="#FF5722"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- LOGO MACAN -->
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:text="CIMANGCU ROOT"
+            android:textColor="#FF5722"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+        <TextView
+            android:text="v1.0"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- CARD AUTO REFRESH -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#333"
+            app:cardCornerRadius="20dp">
+            <LinearLayout 
+                android:padding="12dp" 
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Switch
+                    android:id="@+id/swAutoRefresh"
+                    android:text="Auto Refresh"
+                    android:textColor="#FFF"/>
+                <TextView
+                    android:id="@+id/tvRefreshValue"
+                    android:text="150 ms"
+                    android:textColor="#FFF"
+                    android:gravity="center"/>
+                <SeekBar 
+                    android:id="@+id/sbRefresh" 
+                    android:max="500"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- TOMBOL SAVE -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:text="SAVE SETTINGS"
+            android:textStyle="bold"
+            android:textColor="#FFF"
+            android:backgroundTint="#4CAF50"/>
+
+    </LinearLayout>
+</ScrollView>
