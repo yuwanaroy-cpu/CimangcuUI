@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cimangcu Modul</string>
+    <string name="accessibility_description">Layanan otomatisasi Cimangcu untuk membaca dan menyaring orderan secara otomatis berdasarkan preferensi pengguna.</string>
 </resources>
-
