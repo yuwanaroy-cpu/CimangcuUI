@@ -35,6 +35,21 @@ class CimangcuAccessibilityService : AccessibilityService() {
         isServiceActive = false
     }
 
+    // Fungsi untuk mensimulasikan klik otomatis pada koordinat X, Y
+    fun autoClick(x: Float, y: Float) {
+        if (!isServiceActive) return
+
+        val path = Path().apply {
+            moveTo(x, y)
+        }
+        val builder = GestureDescription.Builder()
+        val gestureDescription = builder
+            .addStroke(GestureDescription.StrokeDescription(path, 0, 50))
+            .build()
+
+        dispatchGesture(gestureDescription, null, null)
+    }
+
     // Fungsi untuk mematikan service secara mandiri
     fun stopServiceSelf() {
         isServiceActive = false
