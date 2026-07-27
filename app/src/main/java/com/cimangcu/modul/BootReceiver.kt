@@ -7,7 +7,7 @@ import android.content.Intent
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
-            // Modul otomatis bersiap saat HP selesai restart
+            // Modul otomatis bersiap saat HP selesai di-restart
         }
     }
 }
