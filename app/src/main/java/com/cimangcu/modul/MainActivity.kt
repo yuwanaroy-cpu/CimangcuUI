@@ -1,12 +1,10 @@
 package com.cimangcu.modul
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
@@ -14,184 +12,101 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.cimangcu.modul.helper.PrefsManager
+import com.cimangcu.modul.service.FloatingWidgetService
 
 class MainActivity : AppCompatActivity() {
 
-    private val OVERLAY_PERMISSION_REQ_CODE = 1234
+    private lateinit var prefsManager: PrefsManager
+
+    private lateinit var inputMinHarga: EditText
+    private lateinit var inputMaxHarga: EditText
+    private lateinit var inputMaxJarak: EditText
+    private lateinit var inputHargaPerKM: EditText
+    private lateinit var inputAlamatBlokir: EditText
+    private lateinit var tvDelayLabel: TextView
+    private lateinit var seekBarDelay: SeekBar
+    private lateinit var btnMengambang: Button
     private lateinit var swHidupkan: SwitchCompat
+    private lateinit var btnSimpan: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cimangcu)
+        super.onCreate()
+        setContentView(R.layout.activity_main)
 
-        val prefs = getSharedPreferences("CimangcuPrefs", Context.MODE_PRIVATE)
+        prefsManager = PrefsManager(this)
 
-        // Inisialisasi Elemen UI
-        val swRefresh = findViewById<SwitchCompat>(R.id.swRefresh)
-        val tvRefreshMs = findViewById<TextView>(R.id.tvRefreshMs)
-        val sbRefresh = findViewById<SeekBar>(R.id.sbRefresh)
-
-        val swWaktuOtomatis = findViewById<SwitchCompat>(R.id.swWaktuOtomatis)
-        val swWaktuManual = findViewById<SwitchCompat>(R.id.swWaktuManual)
-        val tvWaktuMenit = findViewById<TextView>(R.id.tvWaktuMenit)
-        val sbWaktuManual = findViewById<SeekBar>(R.id.sbWaktuManual)
-
-        val swAutobidSemua = findViewById<SwitchCompat>(R.id.swAutobidSemua)
-        val swAutobidSortir = findViewById<SwitchCompat>(R.id.swAutobidSortir)
-        val swAutobidKurir = findViewById<SwitchCompat>(R.id.swAutobidKurir)
-        val swTawarJarak = findViewById<SwitchCompat>(R.id.swTawarJarak)
-
-        val etHrgMin = findViewById<EditText>(R.id.etHrgMin)
-        val etHrgMaks = findViewById<EditText>(R.id.etHrgMaks)
-        val etJrkMaks = findViewById<EditText>(R.id.etJrkMaks)
-
-        val swNaikkanHarga = findViewById<SwitchCompat>(R.id.swNaikkanHarga)
-        val tvPilihan = findViewById<TextView>(R.id.tvPilihan)
-        val sbPilihan = findViewById<SeekBar>(R.id.sbPilihan)
-
-        val btnMengambang = findViewById<Button>(R.id.btnMengambang)
+        // Binding UI
+        inputMinHarga = findViewById(R.id.inputMinHarga)
+        inputMaxHarga = findViewById(R.id.inputMaxHarga)
+        inputMaxJarak = findViewById(R.id.inputMaxJarak)
+        inputHargaPerKM = findViewById(R.id.inputHargaPerKM)
+        inputAlamatBlokir = findViewById(R.id.inputAlamatBlokir)
+        tvDelayLabel = findViewById(R.id.tvDelayLabel)
+        seekBarDelay = findViewById(R.id.seekBarDelay)
+        btnMengambang = findViewById(R.id.btnMengambang)
         swHidupkan = findViewById(R.id.swHidupkan)
-        val btnSimpan = findViewById<Button>(R.id.btnSimpan)
+        btnSimpan = findViewById(R.id.btnSimpan)
 
-        // Memuat Pengaturan yang Tersimpan (SharedPreferences)
-        swRefresh.isChecked = prefs.getBoolean("sw_refresh", false)
-        sbRefresh.progress = prefs.getInt("refresh_ms", 300)
-        tvRefreshMs.text = "${sbRefresh.progress} ms"
+        loadSavedValues()
 
-        swWaktuOtomatis.isChecked = prefs.getBoolean("sw_waktu_otomatis", false)
-        swWaktuManual.isChecked = prefs.getBoolean("sw_waktu_manual", false)
-        sbWaktuManual.progress = prefs.getInt("waktu_manual", 0)
-        tvWaktuMenit.text = "${sbWaktuManual.progress} menit"
-
-        swAutobidSemua.isChecked = prefs.getBoolean("sw_autobid_semua", false)
-        swAutobidSortir.isChecked = prefs.getBoolean("sw_autobid_sortir", false)
-        swAutobidKurir.isChecked = prefs.getBoolean("sw_autobid_kurir", false)
-        swTawarJarak.isChecked = prefs.getBoolean("sw_tawar_jarak", false)
-
-        etHrgMin.setText(prefs.getString("hrg_min", "8000"))
-        etHrgMaks.setText(prefs.getString("hrg_maks", "100000"))
-        etJrkMaks.setText(prefs.getString("jrk_maks", "1000"))
-
-        swNaikkanHarga.isChecked = prefs.getBoolean("sw_naikkan_harga", false)
-        sbPilihan.progress = prefs.getInt("pilihan_val", 0)
-        tvPilihan.text = "Pilihan ${sbPilihan.progress}"
-
-        // Cek status riil Aksesibilitas saat aplikasi dibuka
-        updateAccessibilitySwitchState()
-
-        // Listener SeekBar
-        sbRefresh.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(s: SeekBar?, p: Int, f: Boolean) { tvRefreshMs.text = "$p ms" }
-            override fun onStartTrackingTouch(s: SeekBar?) {}
-            override fun onStopTrackingTouch(s: SeekBar?) {}
-        })
-
-        sbWaktuManual.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(s: SeekBar?, p: Int, f: Boolean) { tvWaktuMenit.text = "$p menit" }
-            override fun onStartTrackingTouch(s: SeekBar?) {}
-            override fun onStopTrackingTouch(s: SeekBar?) {}
-        })
-
-        sbPilihan.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(s: SeekBar?, p: Int, f: Boolean) { tvPilihan.text = "Pilihan $p" }
-            override fun onStartTrackingTouch(s: SeekBar?) {}
-            override fun onStopTrackingTouch(s: SeekBar?) {}
-        })
-
-        // Listener Switch Hidupkan / Matikan Aksesibilitas
-        swHidupkan.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                if (!isAccessibilityServiceEnabled(this, CimangcuAccessibilityService::class.java)) {
-                    Toast.makeText(this, "Silakan aktifkan Aksesibilitas Cimangcu Modul", Toast.LENGTH_LONG).show()
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    startActivity(intent)
-                } else {
-                    CimangcuAccessibilityService.isServiceActive = true
-                    Toast.makeText(this, "Aksesibilitas Aktif", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                // Matikan fitur dan hentikan service secara otomatis
-                CimangcuAccessibilityService.isServiceActive = false
-                CimangcuAccessibilityService.instance?.stopServiceSelf()
-                Toast.makeText(this, "Aksesibilitas Dinonaktifkan", Toast.LENGTH_SHORT).show()
+        // Handler SeekBar / Slider Delay
+        seekBarDelay.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tvDelayLabel.text = "Delay Cocol: $progress detik"
             }
-        }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
-        // Listener Tombol Tampilkan Mengambang
+        // Handler Tombol Mengambang
         btnMengambang.setOnClickListener {
-            checkOverlayPermission()
+            checkAndStartOverlay()
         }
 
-        // Listener Tombol SIMPAN
+        // Handler Simpan
         btnSimpan.setOnClickListener {
-            val editor = prefs.edit()
-            editor.putBoolean("sw_refresh", swRefresh.isChecked)
-            editor.putInt("refresh_ms", sbRefresh.progress)
-            editor.putBoolean("sw_waktu_otomatis", swWaktuOtomatis.isChecked)
-            editor.putBoolean("sw_waktu_manual", swWaktuManual.isChecked)
-            editor.putInt("waktu_manual", sbWaktuManual.progress)
-            editor.putBoolean("sw_autobid_semua", swAutobidSemua.isChecked)
-            editor.putBoolean("sw_autobid_sortir", swAutobidSortir.isChecked)
-            editor.putBoolean("sw_autobid_kurir", swAutobidKurir.isChecked)
-            editor.putBoolean("sw_tawar_jarak", swTawarJarak.isChecked)
-            editor.putString("hrg_min", etHrgMin.text.toString())
-            editor.putString("hrg_maks", etHrgMaks.text.toString())
-            editor.putString("jrk_maks", etJrkMaks.text.toString())
-            editor.putBoolean("sw_naikkan_harga", swNaikkanHarga.isChecked)
-            editor.putInt("pilihan_val", sbPilihan.progress)
-            editor.putBoolean("is_active", swHidupkan.isChecked)
-            editor.apply()
-
-            Toast.makeText(this, "Pengaturan Cimangcu Modul Berhasil Disimpan!", Toast.LENGTH_SHORT).show()
+            saveValues()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Mengupdate posisi switch secara otomatis setiap kali pengguna kembali ke MainActivity
-        updateAccessibilitySwitchState()
+    private fun loadSavedValues() {
+        inputMinHarga.setText(prefsManager.getMinHarga().toInt().toString())
+        inputMaxHarga.setText(prefsManager.getMaxHarga().toInt().toString())
+        inputMaxJarak.setText(prefsManager.getMaxJarak().toString())
+        inputHargaPerKM.setText(prefsManager.getMinHargaPerKm().toInt().toString())
+        inputAlamatBlokir.setText(prefsManager.getRawAreaBlokir())
+        
+        val savedDelay = prefsManager.getDelayCocol()
+        seekBarDelay.progress = savedDelay
+        tvDelayLabel.text = "Delay Cocol: $savedDelay detik"
+
+        swHidupkan.isChecked = prefsManager.isActive()
     }
 
-    private fun updateAccessibilitySwitchState() {
-        val isEnabled = isAccessibilityServiceEnabled(this, CimangcuAccessibilityService::class.java)
-        swHidupkan.isChecked = isEnabled
-        CimangcuAccessibilityService.isServiceActive = isEnabled
+    private fun saveValues() {
+        val minHarga = inputMinHarga.text.toString().toDoubleOrNull() ?: 0.0
+        val maxHarga = inputMaxHarga.text.toString().toDoubleOrNull() ?: 0.0
+        val maxJarak = inputMaxJarak.text.toString().toDoubleOrNull() ?: 0.0
+        val minHargaPerKm = inputHargaPerKM.text.toString().toDoubleOrNull() ?: 0.0
+        val areaBlokir = inputAlamatBlokir.text.toString()
+        val delayCocol = seekBarDelay.progress
+        val isActive = swHidupkan.isChecked
+
+        prefsManager.saveSettings(minHarga, maxHarga, maxJarak, minHargaPerKm, areaBlokir, delayCocol, isActive)
+        Toast.makeText(this, "Pengaturan Berhasil Disimpan!", Toast.LENGTH_SHORT).show()
     }
 
-    // Fungsi Pembantu untuk Memeriksa Apakah Layanan Aksesibilitas Aktif
-    private fun isAccessibilityServiceEnabled(context: Context, service: Class<*>): Boolean {
-        val expectedComponentName = "${context.packageName}/${service.canonicalName}"
-        val enabledServices = Settings.Secure.getString(
-            context.contentResolver,
-            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-        ) ?: return false
-
-        val stringSplitter = TextUtils.SimpleStringSplitter(':')
-        stringSplitter.setString(enabledServices)
-
-        while (stringSplitter.hasNext()) {
-            val componentName = stringSplitter.next()
-            if (componentName.equals(expectedComponentName, ignoreCase = true)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun checkOverlayPermission() {
+    private fun checkAndStartOverlay() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
-            startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE)
+            startActivity(intent)
+            Toast.makeText(this, "Izinkan aplikasi tampil di atas aplikasi lain", Toast.LENGTH_LONG).show()
         } else {
-            startFloatingService()
+            startService(Intent(this, FloatingWidgetService::class.java))
         }
-    }
-
-    private fun startFloatingService() {
-        startService(Intent(this, FloatingService::class.java))
-        Toast.makeText(this, "Tampilkan Mengambang Diaktifkan", Toast.LENGTH_SHORT).show()
     }
 }
