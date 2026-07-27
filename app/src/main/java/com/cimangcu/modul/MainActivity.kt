@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.SwitchCompat
 class MainActivity : AppCompatActivity() {
 
     private val OVERLAY_PERMISSION_REQ_CODE = 1234
+    private lateinit var swHidupkan: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val sbPilihan = findViewById<SeekBar>(R.id.sbPilihan)
 
         val btnMengambang = findViewById<Button>(R.id.btnMengambang)
-        val swHidupkan = findViewById<SwitchCompat>(R.id.swHidupkan)
+        swHidupkan = findViewById(R.id.swHidupkan)
         val btnSimpan = findViewById<Button>(R.id.btnSimpan)
 
         // Memuat Pengaturan yang Tersimpan (SharedPreferences)
@@ -74,7 +76,8 @@ class MainActivity : AppCompatActivity() {
         sbPilihan.progress = prefs.getInt("pilihan_val", 0)
         tvPilihan.text = "Pilihan ${sbPilihan.progress}"
 
-        swHidupkan.isChecked = prefs.getBoolean("is_active", false)
+        // Cek status riil Aksesibilitas saat aplikasi dibuka
+        updateAccessibilitySwitchState()
 
         // Listener SeekBar
         sbRefresh.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -94,6 +97,25 @@ class MainActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(s: SeekBar?) {}
             override fun onStopTrackingTouch(s: SeekBar?) {}
         })
+
+        // Listener Switch Hidupkan / Matikan Aksesibilitas
+        swHidupkan.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (!isAccessibilityServiceEnabled(this, CimangcuAccessibilityService::class.java)) {
+                    Toast.makeText(this, "Silakan aktifkan Aksesibilitas Cimangcu Modul", Toast.LENGTH_LONG).show()
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    startActivity(intent)
+                } else {
+                    CimangcuAccessibilityService.isServiceActive = true
+                    Toast.makeText(this, "Aksesibilitas Aktif", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // Matikan fitur dan hentikan service secara otomatis
+                CimangcuAccessibilityService.isServiceActive = false
+                CimangcuAccessibilityService.instance?.stopServiceSelf()
+                Toast.makeText(this, "Aksesibilitas Dinonaktifkan", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Listener Tombol Tampilkan Mengambang
         btnMengambang.setOnClickListener {
@@ -122,6 +144,38 @@ class MainActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Pengaturan Cimangcu Modul Berhasil Disimpan!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Mengupdate posisi switch secara otomatis setiap kali pengguna kembali ke MainActivity
+        updateAccessibilitySwitchState()
+    }
+
+    private fun updateAccessibilitySwitchState() {
+        val isEnabled = isAccessibilityServiceEnabled(this, CimangcuAccessibilityService::class.java)
+        swHidupkan.isChecked = isEnabled
+        CimangcuAccessibilityService.isServiceActive = isEnabled
+    }
+
+    // Fungsi Pembantu untuk Memeriksa Apakah Layanan Aksesibilitas Aktif
+    private fun isAccessibilityServiceEnabled(context: Context, service: Class<*>): Boolean {
+        val expectedComponentName = "${context.packageName}/${service.canonicalName}"
+        val enabledServices = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+        ) ?: return false
+
+        val stringSplitter = TextUtils.SimpleStringSplitter(':')
+        stringSplitter.setString(enabledServices)
+
+        while (stringSplitter.hasNext()) {
+            val componentName = stringSplitter.next()
+            if (componentName.equals(expectedComponentName, ignoreCase = true)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun checkOverlayPermission() {
