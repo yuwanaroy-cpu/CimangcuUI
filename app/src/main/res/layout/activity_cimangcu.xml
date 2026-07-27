@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A2F082"> <!-- Background hijau muda gradasi -->
+    android:background="#A2F082">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
