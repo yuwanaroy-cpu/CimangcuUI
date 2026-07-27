@@ -18,21 +18,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install Cordova
-      run: npm install -g cordova
-
-    - name: Add Android Platform & Build
-      run: |
-        cordova platform add android
-        cordova build android --debug
+    - name: Build with Gradle
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: modul_cimangcu-debug
-        path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        name: CimangcuModul-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
