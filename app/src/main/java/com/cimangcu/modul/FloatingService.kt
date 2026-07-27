@@ -12,6 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
+import kotlin.math.abs
 
 class FloatingService : Service() {
 
@@ -31,15 +32,17 @@ class FloatingService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
+                @Suppress("DEPRECATION")
                 WindowManager.LayoutParams.TYPE_PHONE,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
-        )
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+            x = 100
+            y = 200
+        }
 
-        params.gravity = Gravity.TOP or Gravity.START
-        params.x = 100
-        params.y = 200
-
+        // Membuat tombol mengambang secara terprogram
         val floatButton = Button(this).apply {
             text = "⚡ Cimangcu"
             setBackgroundColor(Color.parseColor("#FF9800"))
@@ -49,7 +52,7 @@ class FloatingService : Service() {
 
         floatingView = floatButton
 
-        // Fitur Menggeser (Drag & Drop) Widget
+        // Event Listener Drag & Drop + Click Detection
         floatButton.setOnTouchListener(object : View.OnTouchListener {
             private var initialX = 0
             private var initialY = 0
@@ -74,8 +77,11 @@ class FloatingService : Service() {
                     MotionEvent.ACTION_UP -> {
                         val diffX = event.rawX - initialTouchX
                         val diffY = event.rawY - initialTouchY
-                        if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
+                        
+                        // Jika pergeseran kurang dari 10px, anggap sebagai Klik
+                        if (abs(diffX) < 10 && abs(diffY) < 10) {
                             Toast.makeText(this@FloatingService, "Cimangcu Modul Aktif!", Toast.LENGTH_SHORT).show()
+                            // Tambahkan aksi saat tombol diklik di sini jika ada (misal: Buka Menu Utama)
                         }
                         return true
                     }
