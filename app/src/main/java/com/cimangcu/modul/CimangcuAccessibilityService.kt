@@ -7,22 +7,37 @@ import android.view.accessibility.AccessibilityEvent
 
 class CimangcuAccessibilityService : AccessibilityService() {
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Logika untuk mendeteksi event layar (misal: tombol cocol/bid muncul)
+    companion object {
+        var instance: CimangcuAccessibilityService? = null
+        var isServiceActive: Boolean = false
     }
 
-    override fun onInterrupt() {}
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        instance = this
+        isServiceActive = true
+    }
 
-    // Fungsi untuk mensimulasikan Klik Otomatis di koordinat X, Y
-    fun autoClick(x: Float, y: Float) {
-        val path = Path().apply {
-            moveTo(x, y)
-        }
-        val builder = GestureDescription.Builder()
-        val gestureDescription = builder
-            .addStroke(GestureDescription.StrokeDescription(path, 0, 50))
-            .build()
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        // Jika status OFF, jangan jalankan logika auto-click/otomasi sama sekali
+        if (!isServiceActive) return
 
-        dispatchGesture(gestureDescription, null, null)
+        // Logika otomasi kamu berjalan di sini
+    }
+
+    override fun onInterrupt() {
+        isServiceActive = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        instance = null
+        isServiceActive = false
+    }
+
+    // Fungsi untuk mematikan service secara mandiri
+    fun stopServiceSelf() {
+        isServiceActive = false
+        disableSelf() // Mematikan AccessibilityService dari dalam aplikasi
     }
 }
