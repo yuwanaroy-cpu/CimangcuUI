@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <!-- 1. Service Accessibility (Otomasi Klik / Autoclick) -->
+        <!-- Service Accessibility (Otomasi Klik / Autoclick) -->
         <service
             android:name=".CimangcuAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
@@ -53,13 +53,13 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- 2. Service Mengambang (Floating Widget) -->
+        <!-- Service Mengambang (Floating Widget) -->
         <service
             android:name=".FloatingService"
             android:permission="android.permission.SYSTEM_ALERT_WINDOW"
             android:exported="false" />
 
-        <!-- 3. Service Latar Belakang (Foreground Service) -->
+        <!-- Service Latar Belakang (Foreground Service) -->
         <service
             android:name=".MyForegroundService"
             android:permission="android.permission.FOREGROUND_SERVICE"
