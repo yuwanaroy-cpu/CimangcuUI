@@ -3,343 +3,107 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A2F082">
+    android:padding="16dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="#F7F5EB">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
-
-            <!-- 1. Refresh -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Refresh"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swRefresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+            android:padding="16dp">
 
             <TextView
-                android:id="@+id/tvRefreshMs"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="300 ms"
-                android:gravity="center"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-
-            <SeekBar
-                android:id="@+id/sbRefresh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="1000"
-                android:progress="300"
-                android:layout_marginBottom="8dp"/>
-
-            <!-- 2. Waktu Otomatis -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Waktu Otomatis"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swWaktuOtomatis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- 3. Waktu Manual -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Waktu Manual"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swWaktuManual"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvWaktuMenit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0 menit"
-                android:gravity="center"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-
-            <SeekBar
-                android:id="@+id/sbWaktuManual"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="60"
-                android:progress="0"
-                android:layout_marginBottom="8dp"/>
-
-            <!-- 4. Autobid Semua Harga -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Autobid Semua Harga"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swAutobidSemua"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- 5. Autobid Sortir -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Autobid Sortir"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swAutobidSortir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- 6. Autobid / skip (Kurir) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Autobid / skip (Kurir)"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swAutobidKurir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- 7. Tawar Jarak -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Tawar Jarak"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swTawarJarak"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- Header Isi Kolom Harga & Jarak -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#4CAF50"
-                android:text="Isi Kolom Harga &amp; Jarak"
-                android:textColor="#FFFFFF"
+                android:text="Pengaturan Cimangcu Modul"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:padding="10dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="16dp" />
 
-            <!-- Input Kolom Harga Min, Maks, Jarak -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="4dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Hrg Min"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:textSize="12sp" />
-                    <EditText
-                        android:id="@+id/etHrgMin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#383838"
-                        android:textColor="#FFFFFF"
-                        android:text="8000"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:inputType="number"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="4dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Hrg Maks"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:textSize="12sp" />
-                    <EditText
-                        android:id="@+id/etHrgMaks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#383838"
-                        android:textColor="#FFFFFF"
-                        android:text="100000"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:inputType="number"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Jrk Maks"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:textSize="12sp" />
-                    <EditText
-                        android:id="@+id/etJrkMaks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#383838"
-                        android:textColor="#FFFFFF"
-                        android:text="1000"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:inputType="number"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 8. Naikkan Harga -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#383838"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Naikkan Harga"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swNaikkanHarga"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
+            <!-- Input Min Harga -->
             <TextView
-                android:id="@+id/tvPilihan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minimal Harga Order (Rp):" />
+            <EditText
+                android:id="@+id/inputMinHarga"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pilihan 0"
+                android:inputType="number"
+                android:text="10000" />
+
+            <!-- Input Max Harga -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Maksimal Harga Order (Rp):" />
+            <EditText
+                android:id="@+id/inputMaxHarga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="100000" />
+
+            <!-- Input Max Jarak -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Maksimal Jarak (KM):" />
+            <EditText
+                android:id="@+id/inputMaxJarak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="10.0" />
+
+            <!-- Input Harga / KM -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Minimal Harga Per KM (Rp):" />
+            <EditText
+                android:id="@+id/inputHargaPerKM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="4000" />
+
+            <!-- Input Alamat Blokir -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Area Blokir (pisahkan koma):" />
+            <EditText
+                android:id="@+id/inputAlamatBlokir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contoh: Cibinong, Ciluar"
+                android:text="Cibinong, Ciluar" />
+
+            <!-- Label Delay Cocol -->
+            <TextView
+                android:id="@+id/tvDelayLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delay Cocol: 0 detik"
                 android:gravity="center"
                 android:textColor="#666666"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
 
+            <!-- SeekBar Delay -->
             <SeekBar
-                android:id="@+id/sbPilihan"
+                android:id="@+id/seekBarDelay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="10"
@@ -357,7 +121,7 @@
                 android:backgroundTint="#FF9800"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Hidupkan Switch Merah -->
+            <!-- Switch Hidupkan -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
