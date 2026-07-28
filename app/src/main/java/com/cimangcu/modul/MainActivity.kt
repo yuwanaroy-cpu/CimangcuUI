@@ -12,8 +12,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.cimangcu.modul.R // Import ini wajib agar semua ID XML terbaca
 import com.cimangcu.modul.helper.PrefsManager
-import com.cimangcu.modul.service.FloatingWidgetService
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,12 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSimpan: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         prefsManager = PrefsManager(this)
 
-        // Binding UI
         inputMinHarga = findViewById(R.id.inputMinHarga)
         inputMaxHarga = findViewById(R.id.inputMaxHarga)
         inputMaxJarak = findViewById(R.id.inputMaxJarak)
@@ -50,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
         loadSavedValues()
 
-        // Handler SeekBar / Slider Delay
         seekBarDelay.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tvDelayLabel.text = "Delay Cocol: $progress detik"
@@ -59,12 +57,10 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        // Handler Tombol Mengambang
         btnMengambang.setOnClickListener {
             checkAndStartOverlay()
         }
 
-        // Handler Simpan
         btnSimpan.setOnClickListener {
             saveValues()
         }
@@ -76,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         inputMaxJarak.setText(prefsManager.getMaxJarak().toString())
         inputHargaPerKM.setText(prefsManager.getMinHargaPerKm().toInt().toString())
         inputAlamatBlokir.setText(prefsManager.getRawAreaBlokir())
-        
+
         val savedDelay = prefsManager.getDelayCocol()
         seekBarDelay.progress = savedDelay
         tvDelayLabel.text = "Delay Cocol: $savedDelay detik"
@@ -94,6 +90,18 @@ class MainActivity : AppCompatActivity() {
         val isActive = swHidupkan.isChecked
 
         prefsManager.saveSettings(minHarga, maxHarga, maxJarak, minHargaPerKm, areaBlokir, delayCocol, isActive)
+
+        val fgIntent = Intent(this, MyForegroundService::class.java)
+        if (isActive) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(fgIntent)
+            } else {
+                startService(fgIntent)
+            }
+        } else {
+            stopService(fgIntent)
+        }
+
         Toast.makeText(this, "Pengaturan Berhasil Disimpan!", Toast.LENGTH_SHORT).show()
     }
 
@@ -106,7 +114,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             Toast.makeText(this, "Izinkan aplikasi tampil di atas aplikasi lain", Toast.LENGTH_LONG).show()
         } else {
-            startService(Intent(this, FloatingWidgetService::class.java))
+            // Menggunakan FloatingService yang berada di paket utama com.cimangcu.modul
+            startService(Intent(this, FloatingService::class.java))
         }
     }
 }
