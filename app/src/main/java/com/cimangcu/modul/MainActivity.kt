@@ -12,7 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.cimangcu.modul.R // Import ini wajib agar semua ID XML terbaca
+import com.cimangcu.modul.R
 import com.cimangcu.modul.helper.PrefsManager
 
 class MainActivity : AppCompatActivity() {
@@ -114,7 +114,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             Toast.makeText(this, "Izinkan aplikasi tampil di atas aplikasi lain", Toast.LENGTH_LONG).show()
         } else {
-            // Menggunakan FloatingService yang berada di paket utama com.cimangcu.modul
             startService(Intent(this, FloatingService::class.java))
         }
     }
