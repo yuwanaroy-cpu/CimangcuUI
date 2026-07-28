@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cimangcu.modul">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Izin Utama Otomasi & Layanan -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -56,13 +55,11 @@
         <!-- Service Mengambang (Floating Widget) -->
         <service
             android:name=".FloatingService"
-            android:permission="android.permission.SYSTEM_ALERT_WINDOW"
             android:exported="false" />
 
         <!-- Service Latar Belakang (Foreground Service) -->
         <service
             android:name=".MyForegroundService"
-            android:permission="android.permission.FOREGROUND_SERVICE"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
